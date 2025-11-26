@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Control</title>
+</head>
+<body>
+    <h1>Remote Control</h1>
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+
+        const ngrokUrl = ' https://unmired-leontine-unpresumptive.ngrok-free.dev'; // Replace with your ngrok URL
+
+        startBtn.addEventListener('click', () => {
+            fetch(`${ngrokUrl}/start`, { method: 'POST' })
+                .then(response => response.text())
+                .then(message => alert(message));
+        });
+
+        stopBtn.addEventListener('click', () => {
+            fetch(`${ngrokUrl}/stop`, { method: 'POST' })
+                .then(response => response.text())
+                .then(message => alert(message));
+        });
+    </script>
+</body>
+</html>
