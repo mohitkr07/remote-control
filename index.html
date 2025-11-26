@@ -4,28 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Control</title>
+    <style>
+        /* Basic styling for buttons */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+    </style>
 </head>
 <body>
     <h1>Remote Control</h1>
+
+    <!-- Buttons for Start, Stop, and Test -->
     <button id="startBtn">Start</button>
     <button id="stopBtn">Stop</button>
+    <button id="testBtn">Test</button>
+
+    <!-- Loading Spinner (Initially hidden) -->
+    <div id="loading" style="display: none;">Loading...</div>
 
     <script>
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const testBtn = document.getElementById('testBtn');
+        const loading = document.getElementById('loading');
 
-        const ngrokUrl = ' https://unmired-leontine-unpresumptive.ngrok-free.dev'; // Replace with your ngrok URL
+        const ngrokUrl = 'https://unmired-leontine-unpresumptive.ngrok-free.dev';
 
-        startBtn.addEventListener('click', () => {
-            fetch(`${ngrokUrl}/start`, { method: 'POST' })
+        // Function to handle fetch request and show result or error
+        function handleFetchRequest(url, method) {
+            // Show loading indicator and disable buttons
+            loading.style.display = 'block';
+            startBtn.disabled = stopBtn.disabled = testBtn.disabled = true;
+
+            return fetch(url, { method })
                 .then(response => response.text())
-                .then(message => alert(message));
+                .then(message => {
+                    alert(message); // Show server response in alert
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                })
+                .finally(() => {
+                    // Hide loading indicator and enable buttons after request is done
+                    loading.style.display = 'none';
+                    startBtn.disabled = stopBtn.disabled = testBtn.disabled = false;
+                });
+        }
+
+        // Event listeners for the buttons
+        startBtn.addEventListener('click', () => {
+            handleFetchRequest(`${ngrokUrl}/start`, 'POST');
         });
 
         stopBtn.addEventListener('click', () => {
-            fetch(`${ngrokUrl}/stop`, { method: 'POST' })
-                .then(response => response.text())
-                .then(message => alert(message));
+            handleFetchRequest(`${ngrokUrl}/stop`, 'POST');
+        });
+
+        testBtn.addEventListener('click', () => {
+            handleFetchRequest(`${ngrokUrl}/`, 'GET');
         });
     </script>
 </body>
